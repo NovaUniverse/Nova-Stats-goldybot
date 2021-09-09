@@ -1,12 +1,13 @@
 import nextcord
 from nextcord.ext import commands
 import asyncio
+import requests
 
 from goldy_func import *
 from goldy_utility import *
 import config.msg as msg
+import settings
 
-#Change 'your_cog' to the name you wish to call your cog. ('your_cog' is just a placeholder.)
 cog_name = "nova_stats"
 
 class nova_stats(commands.Cog):
