@@ -7,7 +7,7 @@
 
 *More Pictures coming soon...*
 
-- [x] ``!nova {option: status}`` command.
+- [x] ``!nova {option: status, players}`` command.
 - [ ] ``!player {player_ign} {game: optinal}`` command.
 
 ## What is it?
