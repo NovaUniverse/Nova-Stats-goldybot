@@ -24,20 +24,34 @@ class nova_stats(commands.Cog):
             if not option == None:
                 if option.lower() in ["status", "servers"]: #Send a overview of the Nova Universe server status.
                     async with ctx.typing(): #Types when waiting for API.
+                        #Find server status data.
                         servers_data = await api.servers.status.get(ctx, self.client)
-
-                    await nova_stats.pages.server_overview(ctx, servers_data)
+                    
+                    #Send page.
+                    await nova_stats.pages.server_overview(ctx, self.client, servers_data)
 
                     return True
             
-            await ctx.send((goldy_msg.help.command_usage).format(ctx.author.mention, "!nova {option}")) #Sends help.
+            await ctx.send((goldy_msg.help.command_usage).format(ctx.author.mention, "!nova {option: status}")) #Sends help.
 
     @commands.command(aliases=['player'])
-    async def stats(self, ctx, option=None):
+    async def stats(self, ctx, player=None, option=None):
         if await can_the_command_run(ctx, cog_name) == True:
             #WORK IN PROGRESS
-            async with ctx.typing():
-                pass
+            if not player == None:
+                if option == None: #Send player overview page.
+                    async with ctx.typing():
+                        #Find player's data.
+                        pass
+
+                    #Send page.
+                    await ctx.send(goldy_msg.error.not_available_yet)
+                    pass
+
+                else: #Send apropiate page for option.
+                    if option.lower() == "skywars": 
+                        pass
+
 
     class embed():
         @staticmethod
@@ -47,7 +61,7 @@ class nova_stats(commands.Cog):
 
     class pages():
             @staticmethod
-            async def server_overview(ctx, servers_data):
+            async def server_overview(ctx, client, servers_data):
                 servers_context = "\n"
 
                 for server in servers_data:
@@ -55,8 +69,6 @@ class nova_stats(commands.Cog):
                         availablity_icon = "💡"
                     if server.available == False:
                         availablity_icon = "❌"
-
-                    #WORK IN PROGRESS! WHERE I LEFT OFF(09/09/2021)
 
                     servers_context += f"• **{availablity_icon} {server.display_name}:   🕹️``{server.player_count}``**\n"
                 
@@ -70,7 +82,10 @@ class nova_stats(commands.Cog):
                     else:
                         servers_context_left += (servers_context.splitlines())[num] + "\n"
 
+                server_icon = await guild_func.server_icon.get(ctx, client)
+
                 embed = await nova_stats.embed.create(ctx)
+                embed.set_author(name="Nova Universe • Status", url="https://novauniverse.net/status/", icon_url=server_icon)
                 embed.set_image(url="https://media.discordapp.net/attachments/876976105335177286/885874813137207338/Minecraft_2021-04-03_00_33_58.png")
                 embed.add_field(name="**__🌐Server Status__:**", value=servers_context_left, inline=True)
                 embed.add_field(name="**__🌐Server Status__:**", value=servers_context_right, inline=True)
@@ -78,8 +93,13 @@ class nova_stats(commands.Cog):
                 await ctx.send(embed=embed)
                 
             @staticmethod
-            async def overview(ctx, player_name):
+            async def player_overview(ctx, player_name): #Display overall player stats.
                 return True
+
+            class games:
+                @staticmethod
+                async def skywars(ctx, data): #Display all skywars stats.
+                    pass
 
 def setup(client):
     client.add_cog(nova_stats(client))
