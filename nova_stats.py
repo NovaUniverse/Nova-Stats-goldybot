@@ -1,3 +1,4 @@
+from os import name
 import nextcord
 from nextcord.ext import commands
 import asyncio
@@ -21,8 +22,10 @@ class nova_stats(commands.Cog):
     async def nova(self, ctx, option=None):
         if await can_the_command_run(ctx, cog_name) == True:
             if not option == None:
-                if option.lower() == "status": #Send a overview of the Nova Universe server status.
-                    servers_data = await api.servers.status.get(ctx, self.client)
+                if option.lower() in ["status", "servers"]: #Send a overview of the Nova Universe server status.
+                    async with ctx.typing(): #Types when waiting for API.
+                        servers_data = await api.servers.status.get(ctx, self.client)
+
                     await nova_stats.pages.server_overview(ctx, servers_data)
 
                     return True
@@ -45,20 +48,34 @@ class nova_stats(commands.Cog):
     class pages():
             @staticmethod
             async def server_overview(ctx, servers_data):
-                servers_context = ""
+                servers_context = "\n"
 
                 for server in servers_data:
-
                     if server.available == True:
                         availablity_icon = "💡"
                     if server.available == False:
                         availablity_icon = "❌"
 
-                        pass #WORK IN PROGRESS! WHERE I LEFT OFF(09/09/2021)
+                    #WORK IN PROGRESS! WHERE I LEFT OFF(09/09/2021)
 
-                    servers_context += f"**{availablity_icon} {server.display_name}: 🕹️``{server.player_count}`` **\n"
-                    
-                print(servers_context) #Remove after testing.
+                    servers_context += f"• **{availablity_icon} {server.display_name}:   🕹️``{server.player_count}``**\n"
+                
+                #Move odd number lines to left and even to right.
+                servers_context_left = ""
+                servers_context_right = ""
+                max_lines = len(servers_context.splitlines())
+                for num in range(0, max_lines):
+                    if (num % 2) == 0: #Check if even or odd.
+                        servers_context_right += (servers_context.splitlines())[num] + "\n"
+                    else:
+                        servers_context_left += (servers_context.splitlines())[num] + "\n"
+
+                embed = await nova_stats.embed.create(ctx)
+                embed.set_image(url="https://media.discordapp.net/attachments/876976105335177286/885874813137207338/Minecraft_2021-04-03_00_33_58.png")
+                embed.add_field(name="**__🌐Server Status__:**", value=servers_context_left, inline=True)
+                embed.add_field(name="**__🌐Server Status__:**", value=servers_context_right, inline=True)
+
+                await ctx.send(embed=embed)
                 
             @staticmethod
             async def overview(ctx, player_name):
