@@ -29,10 +29,16 @@ class nova_stats(commands.Cog):
                     
                     #Send page.
                     await nova_stats.pages.server_overview(ctx, self.client, servers_data)
+                    return True
 
+                if option.lower() in ["players"]:
+                    async with ctx.typing():
+                        players_online = await api.players.get(ctx, self.client)
+
+                    await nova_stats.pages.players_online(ctx, self.client, players_online)
                     return True
             
-            await ctx.send((goldy_msg.help.command_usage).format(ctx.author.mention, "!nova {option: status}")) #Sends help.
+            await ctx.send((goldy_msg.help.command_usage).format(ctx.author.mention, "!nova {option: status, players}")) #Sends help.
 
     @commands.command(aliases=['player'])
     async def stats(self, ctx, player=None, option=None):
@@ -46,11 +52,13 @@ class nova_stats(commands.Cog):
 
                     #Send page.
                     await ctx.send(goldy_msg.error.not_available_yet)
-                    pass
+                    return True
 
                 else: #Send apropiate page for option.
                     if option.lower() == "skywars": 
-                        pass
+                        return True
+
+            await ctx.send((goldy_msg.help.command_usage).format(ctx.author.mention, "!player {ign}")) #Sends help.
 
 
     class embed():
@@ -62,7 +70,7 @@ class nova_stats(commands.Cog):
     class pages():
             @staticmethod
             async def server_overview(ctx, client, servers_data):
-                servers_context = "\n"
+                servers_context = ""
 
                 for server in servers_data:
                     if server.available == True:
@@ -87,19 +95,54 @@ class nova_stats(commands.Cog):
                 embed = await nova_stats.embed.create(ctx)
                 embed.set_author(name="Nova Universe • Status", url="https://novauniverse.net/status/", icon_url=server_icon)
                 embed.set_image(url="https://media.discordapp.net/attachments/876976105335177286/885874813137207338/Minecraft_2021-04-03_00_33_58.png")
-                embed.add_field(name="**__🌐Server Status__:**", value=servers_context_left, inline=True)
-                embed.add_field(name="**__🌐Server Status__:**", value=servers_context_right, inline=True)
+                if not servers_context_left == "":
+                    embed.add_field(name="**__🌐Server Status__:**", value=servers_context_left, inline=True)
+                if not servers_context_right == "":
+                    embed.add_field(name="**__🌐Server Status__:**", value=servers_context_right, inline=True)
 
                 await ctx.send(embed=embed)
                 
             @staticmethod
-            async def player_overview(ctx, player_name): #Display overall player stats.
-                return True
+            async def players_online(ctx, client, players_online):
+                online_players_context = ""
 
-            class games:
+                for player in players_online.players:
+
+                    online_players_context += f"• **🟢``{player.username}`` in 🌐``{player.server_type_display_name}``**\n"
+
+                #Move odd number lines to left and even to right.
+                online_players_context_left = ""
+                online_players_context_right = ""
+                max_lines = len(online_players_context.splitlines())
+                for num in range(0, max_lines):
+                    if (num % 2) == 0: #Check if even or odd.
+                        online_players_context_right += (online_players_context.splitlines())[num] + "\n" #Odd
+                    else: 
+                        online_players_context_left += (online_players_context.splitlines())[num] + "\n" #Even
+
+                server_icon = await guild_func.server_icon.get(ctx, client)
+
+                embed = await nova_stats.embed.create(ctx)
+                embed.set_author(name="Nova Universe • Players", url="https://novauniverse.net/status/", icon_url=server_icon)
+                embed.set_image(url="https://media.discordapp.net/attachments/876976105335177286/885943940384161802/hAdWXaU_d_1.png")
+                if not online_players_context_left == "":
+                    embed.add_field(name="**__🕹️Online Players__:**", value=online_players_context_left, inline=True)
+                else:
+                    embed.add_field(name="**__🕹️Online Players__:**", value="***Totally a tone of players online ;)***", inline=True)
+                if not online_players_context_right == "":
+                    embed.add_field(name="**__🕹️Online Players__:**", value=online_players_context_right, inline=True)
+
+                await ctx.send(embed=embed)
+
+            class stats:
                 @staticmethod
-                async def skywars(ctx, data): #Display all skywars stats.
-                    pass
+                async def player_overview(ctx, player_name): #Display overall player stats.
+                    return True
+
+                class games:
+                    @staticmethod
+                    async def skywars(ctx, data): #Display all skywars stats.
+                        pass
 
 def setup(client):
     client.add_cog(nova_stats(client))
