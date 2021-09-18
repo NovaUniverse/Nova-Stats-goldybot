@@ -18,6 +18,7 @@ class nova_stats(commands.Cog, name="🐉Nova Stats"):
     def __init__(self, client):
         self.client = client
         self.cog_name = cog_name
+        self.help_command_index = 6
 
     @commands.command()
     async def nova(self, ctx, option=None):
