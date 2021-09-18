@@ -1,6 +1,8 @@
 import requests
+import json
 
-from goldy_utility import *
+from goldy_utility import goldy, SimpleNamespace
+from goldy_func import print_and_log
 import config.msg as msg
 import settings
 
@@ -24,14 +26,14 @@ async def request(web_dir, ctx=None, client=None): #Makes a request to the API. 
         if not data["success"] == True:
             if not data["success"] == False:
                 if not ctx == None:
-                    await goldy.log_error(ctx, client, f"{(msg.api).format(API_NAME)}\n API RETURNED: {data}", None)
+                    await goldy.log_error(ctx, client, f"{(msg.error.api).format(API_NAME)}\n API RETURNED: {data}", None)
                 print_and_log("error", f"[{API_NAME.upper()} : API] Request failed.\n API RETURNED: {data}")
 
             return (msg.api).format(API_NAME)
 
     except KeyError as e:
         if not ctx == None:
-            await goldy.log_error(ctx, client, f"{(msg.api).format(API_NAME)}\n DATA RETURNED BY API: {data}", None)
+            await goldy.log_error(ctx, client, f"{(msg.error.api).format(API_NAME)}\n DATA RETURNED BY API: {data}", None)
         print_and_log("error", f"[{API_NAME.upper()} : API] Request failed.\n DATA RETURNED BY API: {data}")
 
     #Actual request.
@@ -48,7 +50,7 @@ async def request(web_dir, ctx=None, client=None): #Makes a request to the API. 
 
     except Exception as e:
         if not ctx == None:
-            await goldy.log_error(ctx, client, f"{(msg.api).format(API_NAME)} >>> {e}\n DATA RETURNED BY API: {data}", None)
+            await goldy.log_error(ctx, client, f"{(msg.error.api).format(API_NAME)} >>> {e}\n DATA RETURNED BY API: {data}", None)
         print_and_log("error", f"[{API_NAME.upper()} : API] Request failed. >>> {e}\n DATA RETURNED BY API: {data}")
 
     pass

@@ -10,13 +10,14 @@ import config.msg as goldy_msg
 import settings
 
 #Importing nova_stats utilites.
-from .nova import api, msg
+from .nova import api, msg, config
 
 cog_name = "nova_stats"
 
-class nova_stats(commands.Cog):
+class nova_stats(commands.Cog, name="🐉Nova Stats"):
     def __init__(self, client):
         self.client = client
+        self.cog_name = cog_name
 
     @commands.command()
     async def nova(self, ctx, option=None):
@@ -114,6 +115,10 @@ class nova_stats(commands.Cog):
                 online_players_context_left = ""
                 online_players_context_right = ""
                 max_lines = len(online_players_context.splitlines())
+                actual_amount_of_players = max_lines
+                if max_lines > config.nova.players.max_display:
+                    max_lines = 6
+                    
                 for num in range(0, max_lines):
                     if (num % 2) == 0: #Check if even or odd.
                         online_players_context_right += (online_players_context.splitlines())[num] + "\n" #Odd
@@ -125,12 +130,23 @@ class nova_stats(commands.Cog):
                 embed = await nova_stats.embed.create(ctx)
                 embed.set_author(name="Nova Universe • Players", url="https://novauniverse.net/status/", icon_url=server_icon)
                 embed.set_image(url="https://media.discordapp.net/attachments/876976105335177286/885943940384161802/hAdWXaU_d_1.png")
+                '''
                 if not online_players_context_left == "":
                     embed.add_field(name="**__🕹️Online Players__:**", value=online_players_context_left, inline=True)
                 else:
                     embed.add_field(name="**__🕹️Online Players__:**", value="***Totally a tone of players online ;)***", inline=True)
                 if not online_players_context_right == "":
                     embed.add_field(name="**__🕹️Online Players__:**", value=online_players_context_right, inline=True)
+                '''
+
+                if not online_players_context_left == "":
+                    online_players_context_combined = online_players_context_left + online_players_context_right
+                    if actual_amount_of_players > config.nova.players.max_display:
+                        amount_of_more_players = actual_amount_of_players - config.nova.players.max_display
+                        online_players_context_combined += f"\n***__and {amount_of_more_players} player(s) more...__***"
+                    embed.add_field(name="**__🕹️Online Players__:**", value=online_players_context_combined, inline=False)
+                else:
+                    embed.add_field(name="**__🕹️Online Players__:**", value="***Totally a tone of players online ;)***", inline=False)
 
                 await ctx.send(embed=embed)
 
