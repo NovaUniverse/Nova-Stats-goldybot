@@ -7,8 +7,8 @@
 
 *More Pictures coming soon...*
 
-- [x] ``!nova {option: status, players}`` command.
-- [ ] ``!player {player_ign} {game: optinal}`` command.
+- [x] ``!nova {option: status, players}`` command. **(Allows you to check status of Nova Universe servers and who's currently online.)**
+- [ ] ``!player {player_ign} {game: optinal}`` command. **(Allows you to check your and your friends gamemode stats.)** *(Waiting on #1 )*
 
 ## What is it?
 It's just a Cog that allows for viewing [Nova Universe](https://novauniverse.net/) server status and player stats in goldy bot v3. *Currrently in development as of now...*
