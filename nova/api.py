@@ -3,7 +3,7 @@ import json
 
 from goldy_utility import goldy, SimpleNamespace
 from goldy_func import print_and_log
-import config.msg as msg
+import utility.msg as msg
 import settings
 
 from . import endpoints

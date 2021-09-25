@@ -1,3 +1,4 @@
+import datetime
 from os import name
 import nextcord
 from nextcord.ext import commands
@@ -6,10 +7,11 @@ import requests
 
 from goldy_func import *
 from goldy_utility import *
-import config.msg as goldy_msg
+import utility.msg as goldy_msg
 import settings
 
 #Importing nova_stats utilites.
+import importlib
 from .nova import api, msg, config
 
 cog_name = "nova_stats"
@@ -20,8 +22,12 @@ class nova_stats(commands.Cog, name="🐉Nova Stats"):
         self.cog_name = cog_name
         self.help_command_index = 6
 
+        importlib.reload(api)
+        importlib.reload(msg)
+        importlib.reload(config)
+
     @commands.command()
-    async def nova(self, ctx, option=None):
+    async def nova(self, ctx, option=None, description="Allows you to check status of Nova Universe servers and who's currently online."):
         if await can_the_command_run(ctx, cog_name) == True:
             if not option == None:
                 if option.lower() in ["status", "servers"]: #Send a overview of the Nova Universe server status.
@@ -42,7 +48,14 @@ class nova_stats(commands.Cog, name="🐉Nova Stats"):
             
             await ctx.send((goldy_msg.help.command_usage).format(ctx.author.mention, "!nova {option: status, players}")) #Sends help.
 
-    @commands.command(aliases=['player'])
+    @nova.error
+    async def command_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.author.send(msg.error.cooldown.format(datetime.timedelta(seconds=round(error.retry_after))))
+        else:
+            await goldy.log_error(ctx, self.client, error, f"{cog_name}.nova")
+
+    @commands.command(aliases=['player'], description="Allows you to check your and your friend's gamemode stats.", hidden=True)
     async def stats(self, ctx, player=None, option=None):
         if await can_the_command_run(ctx, cog_name) == True:
             #WORK IN PROGRESS
@@ -61,6 +74,13 @@ class nova_stats(commands.Cog, name="🐉Nova Stats"):
                         return True
 
             await ctx.send((goldy_msg.help.command_usage).format(ctx.author.mention, "!player {ign}")) #Sends help.
+
+    @stats.error
+    async def command_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.author.send(msg.error.cooldown.format(datetime.timedelta(seconds=round(error.retry_after))))
+        else:
+            await goldy.log_error(ctx, self.client, error, f"{cog_name}.stats")
 
 
     class embed():
