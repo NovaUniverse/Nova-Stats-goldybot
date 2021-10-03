@@ -5,8 +5,8 @@ from nextcord.ext import commands
 import asyncio
 import requests
 
-from goldy_func import *
-from goldy_utility import *
+from src.goldy_func import *
+from src.goldy_utility import *
 import utility.msg as goldy_msg
 import settings
 
@@ -96,9 +96,9 @@ class nova_stats(commands.Cog, name="🐉Nova Stats"):
 
                 for server in servers_data:
                     if server.available == True:
-                        availablity_icon = "💡"
+                        availablity_icon = "<:NovaOnline:710486016758382593>"
                     if server.available == False:
-                        availablity_icon = "❌"
+                        availablity_icon = "<:Offline:710486017022623745>"
 
                     servers_context += f"• **{availablity_icon} {server.display_name}:   🕹️``{server.player_count}``**\n"
                 
@@ -167,7 +167,7 @@ class nova_stats(commands.Cog, name="🐉Nova Stats"):
                         online_players_context_combined += f"\n***__and {amount_of_more_players} player(s) more...__***"
                     embed.add_field(name="**__🕹️Online Players__:**", value=online_players_context_combined, inline=False)
                 else:
-                    embed.add_field(name="**__🕹️Online Players__:**", value="***Totally a tone of players online ;)***", inline=False)
+                    embed.add_field(name="**__🕹️Online Players__:**", value="***Totally a ton of players online ;)***", inline=False)
 
                 await ctx.send(embed=embed)
 

@@ -1,8 +1,8 @@
 import requests
 import json
 
-from goldy_utility import goldy, SimpleNamespace
-from goldy_func import print_and_log
+from src.goldy_utility import goldy, SimpleNamespace
+from src.goldy_func import print_and_log
 import utility.msg as msg
 import settings
 
