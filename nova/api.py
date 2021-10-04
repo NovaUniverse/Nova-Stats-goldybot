@@ -5,13 +5,14 @@ from src.goldy_utility import goldy, SimpleNamespace
 from src.goldy_func import print_and_log
 import utility.msg as msg
 import settings
+import config.config as config
 
 from . import endpoints
 
 API = "https://novauniverse.net/api"
 API_NAME = "Nova Universe"
 
-headers = {'User-Agent': str(settings.bot_name + settings.bot_version)}
+headers = {'User-Agent': str(settings.bot_name + config.bot_version)}
 
 async def request(web_dir, ctx=None, client=None): #Makes a request to the API. (Used as the main method to make requests to the API.)
     #Check if web server is up.
