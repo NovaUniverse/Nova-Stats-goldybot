@@ -3,7 +3,10 @@ import json
 
 from src.goldy_utility import goldy, SimpleNamespace
 from src.goldy_func import print_and_log
-import utility.msg as msg
+try:
+    import src.utility.msg as msg #New Goldy Bot
+except ImportError:
+    import utility.msg as msg #Old Goldy Bot. (I changed the folder structure in the latest goldy bot CDK.)
 import settings
 import config.config as config
 
