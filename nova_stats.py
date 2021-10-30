@@ -7,7 +7,10 @@ import requests
 
 from src.goldy_func import *
 from src.goldy_utility import *
-import utility.msg as goldy_msg
+try:
+    import src.utility.msg as goldy_msg #New Goldy Bot
+except ImportError:
+    import utility.msg as goldy_msg #Old Goldy Bot. (I changed the folder structure in the latest goldy bot CDK.)
 import settings
 
 #Importing nova_stats utilites.
