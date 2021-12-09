@@ -61,8 +61,8 @@ class nova_stats(commands.Cog, name="🐉Nova Stats"):
         else:
             await goldy.log_error(ctx, self.client, error, f"{cog_name}.nova")
 
-    @commands.command(aliases=['player'], description="Allows you to check your and your friend's gamemode stats.", hidden=True)
-    async def stats(self, ctx, player:str=None, option=None):
+    @commands.command(aliases=['stats'], description="Allows you to check your and your friend's gamemode stats.", hidden=True)
+    async def player(self, ctx, player:str=None, option=None):
         if await can_the_command_run(ctx, cog_name) == True:
             if not player == None:
                 if option == None: #Send player overview page.
@@ -87,7 +87,7 @@ class nova_stats(commands.Cog, name="🐉Nova Stats"):
 
             await ctx.send((goldy_msg.help.command_usage).format(ctx.author.mention, "!player {ign}")) #Sends help.
 
-    @stats.error
+    @player.error
     async def command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.author.send(msg.error.cooldown.format(datetime.timedelta(seconds=round(error.retry_after))))
